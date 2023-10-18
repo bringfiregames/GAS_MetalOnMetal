@@ -20,16 +20,20 @@ void AAuraEffectActor::BeginPlay()
 	
 }
 
+// Function to handle when this actor overlaps with another actor
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
+	// Apply instant effect if the policy matches
 	if(InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
 	}
+	// Apply duration effect if the policy matches
 	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
 	}
+	// Apply infinite effect if the policy matches
 	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
