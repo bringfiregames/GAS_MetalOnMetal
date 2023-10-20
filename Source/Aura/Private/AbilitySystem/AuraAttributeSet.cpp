@@ -29,26 +29,20 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 
 //This is called whenever attributes change.  It is applied before modifying the attributes.
-void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+void UAuraAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
 {
-	Super::PreAttributeChange(Attribute, NewValue);
+	Super::PreAttributeBaseChange(Attribute, NewValue);
 
 	if(Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxHealth());
 	}
-	else if(Attribute == GetMaxHealthAttribute())
-	{
-		NewValue = FMath::Max<float>(NewValue, 0.0f);
-	}
-	else if(Attribute == GetEnergyAttribute())
+
+	if(Attribute == GetEnergyAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxEnergy());
 	}
-	else if(Attribute == GetMaxEnergyAttribute())
-	{
-		NewValue = FMath::Max<float>(NewValue, 0.0f);
-	}
+
 }
 
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
