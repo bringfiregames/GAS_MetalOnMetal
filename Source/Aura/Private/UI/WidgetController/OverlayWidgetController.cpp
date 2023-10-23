@@ -32,10 +32,20 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		{
 			for(const FGameplayTag& Tag : AssetTags)
 			{
-			
-				GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Blue, FString::Printf(TEXT("GE Tag: %s"), *Tag.ToString()));
-
-				FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+				//For example, say that Tag = Message.HealthPotion
+				//"Message.HealthPotion".MatchesTag("Message") will return True, "Message".MatchesTag("Message.HealthPotion") will return False
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				if(Tag.MatchesTag(MessageTag))
+				{
+					//IN THIS EXAMPLE: This will return True, because "Message.HealthPotion" is a child of "Message" -- however it is a general purpose Lambda function, so it will work for any Message Tag
+					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+					MessageWidgetRowDelegate.Broadcast(*Row);
+					
+				}
+				
+				
+				
+				
 			}
 			//OnEffectAssetTags.Broadcast(AssetTags);
 		}
