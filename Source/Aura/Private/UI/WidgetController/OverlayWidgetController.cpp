@@ -22,10 +22,40 @@ void UOverlayWidgetController::BroadcastInitialValues()
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddUObject(this, &UOverlayWidgetController::OnHealthChangedCallback);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UOverlayWidgetController::OnMaxHealthChangedCallback);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetEnergyAttribute()).AddUObject(this, &UOverlayWidgetController::OnEnergyChangedCallback);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxEnergyAttribute()).AddUObject(this, &UOverlayWidgetController::OnMaxEnergyChangedCallback);
+	
+	/*Lambdas are a way to create a function on the fly, without having to create a new class for it, or having to declare it in the header file, or having to write it in a cpp file, etc.
+	 *The Lambdas below are used to bind the OnHealthChanged, OnMaxHealthChanged, OnEnergyChanged, and OnMaxEnergyChanged delegates to the corresponding Attributes in the AttributeSet.
+	 *These Lambdas are functions that take in a const FOnAttributeChangeData& Data, and then call the corresponding Broadcast function with the NewValue of the Attribute.
+	 *We use Lambdas here because we want to bind the delegates to the Attributes, but we don't want to have to create a new function for each Attribute.
+	 **/
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+		{
+		OnHealthChanged.Broadcast(Data.NewValue);
+		}
+		);
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+	{
+	OnMaxHealthChanged.Broadcast(Data.NewValue);
+	}
+	);
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetEnergyAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+{
+OnEnergyChanged.Broadcast(Data.NewValue);
+}
+);
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxEnergyAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+{
+OnMaxEnergyChanged.Broadcast(Data.NewValue);
+}
+);
+	
 	
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
 		[this](const FGameplayTagContainer& AssetTags)
@@ -42,34 +72,10 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 					MessageWidgetRowDelegate.Broadcast(*Row);
 					
 				}
-				
-				
-				
-				
 			}
 			//OnEffectAssetTags.Broadcast(AssetTags);
 		}
 
 	);
 	
-}
-
-void UOverlayWidgetController::OnHealthChangedCallback(const FOnAttributeChangeData& Data) const
-{
-	OnHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::OnMaxHealthChangedCallback(const FOnAttributeChangeData& Data) const
-{
-	OnMaxHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::OnEnergyChangedCallback(const FOnAttributeChangeData& Data) const
-{
-	OnEnergyChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::OnMaxEnergyChangedCallback(const FOnAttributeChangeData& Data) const
-{
-	OnMaxEnergyChanged.Broadcast(Data.NewValue);
 }
