@@ -50,9 +50,10 @@ struct FEffectProperties
 	FGameplayEffectContextHandle EffectContextHandle;
 };
 
- 
+
 /**
- * 
+ *  UAuraAttributeSet is a class that represents the attribute set for a character in the UAura API.
+ *  It extends the UAttributeSet class from the GameplayAbilities module and provides the primary and vital attributes for the character.
  */
 UCLASS()
 class AURA_API UAuraAttributeSet : public UAttributeSet
