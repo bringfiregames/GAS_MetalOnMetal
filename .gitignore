@@ -4,6 +4,10 @@ Intermediate
 Saved
 Build
 
+# Rider C++
+.idea/
+Plugins/Developer/RiderLink/
+
 .vscode
 .vs
 *.VC.db
